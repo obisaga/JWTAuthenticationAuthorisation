@@ -20,27 +20,27 @@ const generateToken = (data) => {
   }
 
 
-const middlewareAuthorizationFunction = (req, res, next) => {
-    //Get token from header
-    const token = req.headers.authorization;
+// const middlewareAuthorizationFunction = (req, res, next) => {
+//     //Get token from header
+//     const token = req.headers.authorization;
     
-    if(!token){
-        return res.sendStatus(401)
-    }
+//     if(!token){
+//         return res.sendStatus(401)
+//     }
 
-    const tokenData = token.split(' ')[1];
-    console.log(tokenData)
+//     const tokenData = token.split(' ')[1];
+//     console.log(tokenData)
 
 
-    //Verify token
-    jwt.verify(tokenData, secret, (err, user) => {
-        if(err){
-            return res.sendStatus(401)
-        }
-        req.user = user;
-        next();
-    })
-}
+//     //Verify token
+//     jwt.verify(tokenData, secret, (err, user) => {
+//         if(err){
+//             return res.sendStatus(401)
+//         }
+//         req.user = user;
+//         next();
+//     })
+// }
 
 
 
@@ -57,9 +57,9 @@ console.log(req.headers)
           res.send(`
     <form action="/api/users/connect" method="post">
     <label for="login">Login:</label><br>
-    <input type="text" placeholder = "Your login"><br><br>
+    <input type="text" id="login" name="login" placeholder = "Your login"><br><br>
     <label for="password">Password:</label><br>
-    <input type="text" placeholder = "Your password"><br><br>
+    <input type="text" id="password" name="password" placeholder = "Your password"><br><br>
     <input type="submit" value="Submit">
     </form> 
     `);
@@ -74,39 +74,33 @@ console.log(req.headers)
 
 
 
-// appUserRouter.post("/connect", async (req, res) => {
-//     const { login, password} = req.body;
-//     try {
-
-//         const token = (data) => {
-//             return jwt.sign(data, secret, {expiresIn: '1800s'})
-//           }
-//           res.header(authorization, [token])
-
-//         const user = await AppUser.create({login, password, token});
-      
-  
-
-//     } catch(err){
-//         return res.status(500).json(err)
-//     }
-// })
 
 appUserRouter.post('/connect', async (req, res) => {
-console.log(req.headers)
-console.log(req.body)
-
-    // console.log(res.get('Content-Type'));
-   
 
     try {
         
+        if (req.body.login != 'John' || req.body.password != 'Doe') {
+            console.log('false')
+            res.redirect('login')
 
-        res.send('welcome, ' + req.body.login)
-            
-                }
-                // const token = generateToken({login: user.login});
-                // res.json({token})
+        }
+    else {
+        console.log('true')
+            const token = generateToken({login: req.body.login});
+            console.log(res.set({token}))
+
+            res.send(`
+            <form action="/api/users/checkJWT" method="post">
+            <label for="token">Check Your Token:</label><br>
+            <input type="text" id="token" name="token" placeholder = "Token"><br><br>
+            <input type="submit" value="Submit">
+            </form> 
+            `); 
+        
+    }
+    }
+                
+                
             
             catch(err){
                 return res.status(500).json(err)
@@ -114,22 +108,7 @@ console.log(req.body)
    
         })
 
-// appUserRouter.post("/connect", urlencodedParser, async (req, res) => {
-//     const {login, password} = req.body;
 
-   
-//     try {
-
-//         // if (login === 'john' && password ==='doe'){
-//           console.log(req.body.login)
-//         // }
-//         // const token = generateToken({login: user.login});
-//         // res.json({token})
-    
-//     } catch(err){
-//         return res.status(500).json(err)
-//     }
-// })
 
 
 
