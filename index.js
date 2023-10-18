@@ -1,26 +1,33 @@
-// import express from 'express';
-// import 'dotenv/config';
-// import client from './db/db.js';
-// import studentRouter from './routes/student.js';
-// import tokenRouter from './routes/token.js';
-// import userRouter from './routes/user.js';
+import express from 'express';
+import 'dotenv/config';
+import client from './db/db.js';
+import cors from "cors";
+import appUserRouter from './routes/appUser.js';
 
 
 
 
-// const app = express();
-// app.use(express.json());
-// app.use('/api/students', studentRouter);
-// app.use('/api/tokens', tokenRouter);
-// app.use('/api/users', userRouter);
+
+
+const app = express();
+
+app.use(cors())
+
+app.use(express.json());
+// app.use(express.urlencoded({extended: true}));
+
+app.use('/api/users', appUserRouter);
 
 
 
-// const port = process.env.PORT || 3000;
 
-// client.on('connected', () => {
-//     app.listen(port, () => {
-//         console.log(`Server listening on port ${port}`)
-//     })
-// })
+
+
+const port = process.env.PORT || 3000;
+
+client.on('connected', () => {
+    app.listen(port, () => {
+        console.log(`Server listening on port ${port}`)
+    })
+})
 
