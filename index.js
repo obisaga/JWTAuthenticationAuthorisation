@@ -1,7 +1,6 @@
 import express from 'express';
 import 'dotenv/config';
 import client from './db/db.js';
-import cors from "cors";
 import appUserRouter from './routes/appUser.js';
 
 
@@ -11,7 +10,6 @@ import appUserRouter from './routes/appUser.js';
 
 const app = express();
 
-app.use(cors())
 
 app.use(express.json());
 // app.use(express.urlencoded({extended: true}));
