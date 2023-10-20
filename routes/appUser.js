@@ -8,7 +8,7 @@ import jwt from 'jsonwebtoken';
 
 
 
-appUserRouter.use(express.urlencoded({extended: true}));
+// appUserRouter.use(express.urlencoded({extended: true}));
 
 
 const secret = process.env.SECRET_TOKEN;
@@ -20,12 +20,9 @@ const generateToken = (data) => {
 
 
 
-
-
-
-appUserRouter.get("/login", async (req, res) => {
+// no need for async await donw here, because we send static data
+  appUserRouter.get("/login", (req, res) => {
     
-    try {
         res.send(`
             <form action="/api/users/connect" method="post">
             <label for="login">Login:</label><br>
@@ -36,10 +33,25 @@ appUserRouter.get("/login", async (req, res) => {
             </form> 
         `);
 
-    } catch(err){
-        res.status(500).json(err)
-    }
 })
+
+// appUserRouter.get("/login", async (req, res) => {
+    
+//     try {
+//         res.send(`
+//             <form action="/api/users/connect" method="post">
+//             <label for="login">Login:</label><br>
+//             <input type="text" id="login" name="login" placeholder = "Your login"><br><br>
+//             <label for="password">Password:</label><br>
+//             <input type="text" id="password" name="password" placeholder = "Your password"><br><br>
+//             <input type="submit" value="Submit">
+//             </form> 
+//         `);
+
+//     } catch(err){
+//         res.status(500).json(err)
+//     }
+// })
 
 
 
@@ -55,6 +67,9 @@ appUserRouter.post('/connect', async (req, res) => {
 
             const token = generateToken({login: req.body.login});
             res.set({token});
+            //below also correct (POSTMAN - Authorization Bearer), we can see it in devtools>network>connect>
+            //res.header("Authorization", 'Bearer' + token)
+
             console.log(token);
 
             res.send(`
@@ -76,7 +91,8 @@ appUserRouter.post('/connect', async (req, res) => {
     const usertoken = req.body.token;
     jwt.verify(usertoken, secret, (err, appUser) => {
         if(err){
-        return res.sendStatus(401)}
+        return res.redirect('login')
+    }
     req.user = appUser;    
     next()
     
